@@ -1,0 +1,16 @@
+#!/bin/bash
+
+IFS=$'\n'
+
+output="`brew fetch -f -s $1 2>&1`"
+if echo "$output" | grep -q "Download failed:"; then
+	echo "$output"
+	url="`echo "$output" | grep "Download failed:" | head -1 | cut -d' ' -f3`"
+	path="`brew --cache -s $1`"
+	echo
+	echo "==> Downloading via wget $url"
+	wget --no-check-certificate --show-progress "$url" -O "$path"
+else
+	echo "$output"
+fi
+
